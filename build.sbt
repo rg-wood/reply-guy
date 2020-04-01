@@ -14,4 +14,19 @@ libraryDependencies ++= Seq(
   "me.gladwell.microtesia" %% "microtesia"             % "0.5.1"
 )
 
+scalacOptions ++= Seq(
+  "-deprecation",
+  "-encoding", "UTF-8",
+  "-language:higherKinds",
+  "-language:postfixOps",
+  "-feature",
+  "-Xfatal-warnings",
+  "-Ywarn-unused:implicits",
+  "-Ywarn-unused:imports",
+  "-Ywarn-unused:locals",
+  "-Ywarn-unused:params",
+  "-Ywarn-unused:patvars",
+  "-Ywarn-unused:privates"
+)
+
 enablePlugins(JavaAppPackaging)

@@ -26,11 +26,7 @@ trait DeckardClient[F[_]] {
 
   private val rollItemType = new URI("http://grislyeye.com/deckard/microdata/roll")
 
-  def rollOnTable(table: String)(
-    implicit F: ConcurrentEffect[F],
-    cs: ContextShift[F],
-    timer: Timer[F]
-  ): Stream[F, String] =
+  def rollOnTable(table: String)(implicit F: ConcurrentEffect[F]): Stream[F, String] =
     Stream.eval {
       BlazeClientBuilder[F](global).resource.use { client =>
         for {
