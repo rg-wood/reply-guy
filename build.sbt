@@ -14,3 +14,5 @@ libraryDependencies ++= Seq(
   "org.http4s"             %% "http4s-blaze-client"    % "0.21.2",
   "me.gladwell.microtesia" %% "microtesia"             % "0.5.1"
 )
+
+enablePlugins(JavaAppPackaging)
