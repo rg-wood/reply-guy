@@ -1,8 +1,10 @@
 package me.gladwell.twitter.reply
 
-import fs2.Stream
-import cats.effect.{ExitCode, IO, IOApp}
+import fs2._
+import cats.effect._
 import cats.implicits._
+
+import scala.concurrent.duration._
 
 object Bot extends IOApp with Logging[IO] with TwitterClient[IO] with DeckardClient[IO] {
 
@@ -15,22 +17,21 @@ object Bot extends IOApp with Logging[IO] with TwitterClient[IO] with DeckardCli
       mention <- mentions()
     } yield mention
 
-  private val filters: Stream[IO, Status] =
+  private val fetchAndFilterMentions: Stream[IO, Status] =
     fetchMentions
       .filter(isAskingQuestion)
       .filter{ !_.replied }
 
   private val stream: Stream[IO, Unit] =
     for {
-      mention <- filters
+      mention <- fetchAndFilterMentions
       message <- rollOnTable("grislyeye/lofacharacters")
       _       <- log(s"replying to status=[${mention.id}] from user=[@${mention.user}] with message=[$message]")
       _       <- replyTo(mention, message)
-      _       <- log("finished reply-guy")
     } yield ()
 
   override def run(args: List[String]): IO[ExitCode] =
-    stream
+    (Stream.awakeEvery[IO](10 minutes) >> stream)
       .compile
       .drain
       .as(ExitCode.Success)
