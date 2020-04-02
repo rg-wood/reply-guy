@@ -1,4 +1,4 @@
-package me.gladwell.twitter.reply
+package com.grislyeye.twitter.reply
 
 import java.net.URI
 

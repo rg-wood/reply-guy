@@ -35,7 +35,7 @@ enablePlugins(JavaAppPackaging)
 
 enablePlugins(BuildInfoPlugin)
 
-buildInfoPackage := "me.gladwell.twitter.reply"
+buildInfoPackage := "com.grislyeye.twitter.reply"
 
 addCompilerPlugin("org.typelevel" %% "kind-projector"     % "0.10.3")
 

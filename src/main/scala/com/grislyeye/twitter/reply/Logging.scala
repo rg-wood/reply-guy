@@ -1,4 +1,4 @@
-package me.gladwell.twitter.reply
+package com.grislyeye.twitter.reply
 
 import cats.effect.Sync
 import cats.implicits._
