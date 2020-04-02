@@ -17,14 +17,9 @@ object Bot extends IOApp with Logging[IO] with TwitterClient[IO] with DeckardCli
       _      <- logger.info(s"starting ${BuildInfo.name} (v${BuildInfo.version})")
     } yield ()
 
-  private val fetchAndFilterMentions: Stream[IO, Status] =
-    mentions()
-      .filter(isAskingQuestion)
-      .filter{ !_.replied }
-
   private val stream: Stream[IO, Unit] =
     for {
-      mention <- fetchAndFilterMentions
+      mention <- mentions().filter(isAskingQuestion).filter{ !_.replied }
       message <- rollOnTable("grislyeye/lofacharacters")
       _       <- replyTo(mention, message)
     } yield ()
