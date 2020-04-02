@@ -11,7 +11,7 @@ import twitter4j.conf.ConfigurationBuilder
 
 import scala.jdk.CollectionConverters._
 
-trait TwitterClient[F[_]] {
+trait TwitterClient[F[_]] { self: Logging[F] =>
 
   private case class Configuration(
     apiKey: String,
@@ -74,15 +74,20 @@ trait TwitterClient[F[_]] {
   def mentions()(implicit F: Sync[F]): Stream[F, Status] =
     Stream.evalSeq {
       for {
+        logger   <- loggerF()
+        _        <- logger.debug("searching for mentions")
         twitter  <- client()
         mentions <- fetchMentions(twitter)
+        _        <- logger.debug(s"found ${mentions.size} mentions")
       } yield mentions
     }
 
   def replyTo(status: Status, message: String)(implicit F: Sync[F]): Stream[F, Unit] =
     Stream.eval {
       for {
+        logger  <- loggerF()
         twitter <- client()
+        _       <- logger.info(s"replying to status=[${status.id}] from user=[@${status.user}] with message=[$message]")
         _       <- F.delay {
           val reply = new StatusUpdate(s"@${status.user} $message").inReplyToStatusId(status.id)
           twitter.updateStatus(reply)

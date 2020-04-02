@@ -11,14 +11,14 @@ object Bot extends IOApp with Logging[IO] with TwitterClient[IO] with DeckardCli
   private def isAskingQuestion(mention: Status): Boolean =
     ".*(who\\s*am\\s*i).*".r.matches(mention.text.toLowerCase)
 
-  private val fetchMentions: Stream[IO, Status] =
+  private val startUp: Stream[IO, Unit] =
     for {
-      _       <- log("starting reply-guy")
-      mention <- mentions()
-    } yield mention
+      logger <- loggerSF()
+      _      <- logger.info(s"starting ${BuildInfo.name} (v${BuildInfo.version})")
+    } yield ()
 
   private val fetchAndFilterMentions: Stream[IO, Status] =
-    fetchMentions
+    mentions()
       .filter(isAskingQuestion)
       .filter{ !_.replied }
 
@@ -26,12 +26,11 @@ object Bot extends IOApp with Logging[IO] with TwitterClient[IO] with DeckardCli
     for {
       mention <- fetchAndFilterMentions
       message <- rollOnTable("grislyeye/lofacharacters")
-      _       <- log(s"replying to status=[${mention.id}] from user=[@${mention.user}] with message=[$message]")
       _       <- replyTo(mention, message)
     } yield ()
 
   override def run(args: List[String]): IO[ExitCode] =
-    (Stream.awakeEvery[IO](10 minutes) >> stream)
+    (startUp >> Stream.awakeEvery[IO](30 minutes) >> stream)
       .compile
       .drain
       .as(ExitCode.Success)

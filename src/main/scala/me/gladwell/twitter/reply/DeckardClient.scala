@@ -16,7 +16,7 @@ import pureconfig.generic.auto._
 
 import scala.concurrent.ExecutionContext.global
 
-trait DeckardClient[F[_]] {
+trait DeckardClient[F[_]] { self: Logging[F] =>
 
   private case class Configuration(uri: String)
 
@@ -30,6 +30,8 @@ trait DeckardClient[F[_]] {
     Stream.eval {
       BlazeClientBuilder[F](global).resource.use { client =>
         for {
+          logger    <- loggerF()
+          _         <- logger.debug(s"rolling for table=[$table]")
           config    <- ConfigSource.default.at("deckard").loadF[F, Configuration]
           uri       <- Uri.fromString(s"${config.uri}/$table/rolls").liftTo[F]
           html      <- client.expect[String](Request[F](POST, uri))
