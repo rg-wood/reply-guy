@@ -13,7 +13,10 @@ libraryDependencies ++= Seq(
   "me.gladwell.microtesia" %% "microtesia"             % "0.5.1",
   "io.chrisdavenport"      %% "log4cats-core"          % "1.0.1",
   "io.chrisdavenport"      %% "log4cats-slf4j"         % "1.0.1",
-  "org.slf4j"              % "slf4j-simple"            % "1.7.30"
+  "org.slf4j"              % "slf4j-simple"            % "1.7.30",
+  "org.tpolecat"           %% "doobie-core"            % "0.8.8",
+  "org.tpolecat"           %% "doobie-postgres"        % "0.8.8",
+  "org.flywaydb"           %  "flyway-core"            % "6.2.4"
 )
 
 scalacOptions ++= Seq(

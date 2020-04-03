@@ -10,13 +10,15 @@ $ sbt run
 
 Reply Guy requires the following configuration parameters:
 
-| Environment Variable                  | Description 
-| ------------------------------------- | -----------
-| REPLY_GUY_TWITTER_API_KEY             | Twitter developer API key.
-| REPLY_GUY_TWITTER_SECRET_KEY          | Twitter developer secret key.
-| REPLY_GUY_TWITTER_ACCESS_TOKEN        | Twitter developer access token.
-| REPLY_GUY_TWITTER_ACCESS_TOKEN_SECRET | Twitter developer access token secret.
-| REPLY_GUY_DECKARD_URI                 | URI for Deckard server
+| Environment Variable                    | Description
+| --------------------------------------- | -----------
+| `REPLY_GUY_TWITTER_API_KEY`             | Twitter developer API key.
+| `REPLY_GUY_TWITTER_SECRET_KEY`          | Twitter developer secret key.
+| `REPLY_GUY_TWITTER_ACCESS_TOKEN`        | Twitter developer access token.
+| `REPLY_GUY_TWITTER_ACCESS_TOKEN_SECRET` | Twitter developer access token secret.
+| `REPLY_GUY_DECKARD_URI`                 | URI for Deckard server
+| `REPLY_GUY_JDBC_DATABASE_URL`           | URL for Postgres database (optional)
+| `JDBC_DATABASE_URL`                     | Fallback URL for Postgres database (for Heroku)
 
 ## Deploy
 
