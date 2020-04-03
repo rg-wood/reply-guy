@@ -10,11 +10,14 @@ import org.http4s.client.blaze._
 import org.http4s.Method.POST
 import microtesia._
 import microtesia.formats._
+import org.http4s.client.middleware.RetryPolicy.exponentialBackoff
+import org.http4s.client.middleware.{Retry, RetryPolicy}
 import pureconfig._
 import pureconfig.module.catseffect.syntax._
 import pureconfig.generic.auto._
 
 import scala.concurrent.ExecutionContext.global
+import scala.concurrent.duration._
 
 trait DeckardClient[F[_]] { self: Logging[F] =>
 
@@ -26,9 +29,11 @@ trait DeckardClient[F[_]] { self: Logging[F] =>
 
   private val rollItemType = new URI("http://grislyeye.com/deckard/microdata/roll")
 
-  def rollOnTable(table: String)(implicit F: ConcurrentEffect[F]): Stream[F, String] =
+  private val retryPolicy = RetryPolicy[F](exponentialBackoff(30 seconds, 3))
+
+  def rollOnTable(table: String)(implicit F: ConcurrentEffect[F], timer: Timer[F]): Stream[F, String] =
     Stream.eval {
-      BlazeClientBuilder[F](global).resource.use { client =>
+      BlazeClientBuilder[F](global).resource.map(Retry(retryPolicy)).use { client =>
         for {
           logger    <- loggerF()
           _         <- logger.debug(s"rolling for table=[$table]")
